@@ -2,11 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/tasks")
 const cors = require("cors")
+require("dotenv").config()
+
 
 mongoose
-  .connect(
-    "mongodb+srv://anmosingh48_db_user:anmol@cluster0.nvbhr6p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to mongoose"));
 const port = 8000;
 const app = express();
