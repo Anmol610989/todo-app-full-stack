@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/tasks")
 const cors = require("cors")
-require("dotenv").config()
+require("dotenv").config({path: "../.env"})
 
 
 mongoose
