@@ -20,11 +20,14 @@ router.get("/:id", (req, res)=>{
     })
 })
 router.post("/", async (req, res)=>{
+    console.log(req.body)
     const { title, description, dueDate, priority } = req.body;
     const newTask = new Task({
       title: title,
       description: description,
+      completed: false,
       dueDate: dueDate,
+    // ...(dueDate ? { dueDate } : {}),  // Handle null date value from frontend
       priority:priority
     });
     try {
@@ -41,7 +44,7 @@ router.put("/:id", async (req, res)=>{
     try{
      const updatedTask = await Task.findByIdAndUpdate(
        id,
-         { title, description, dueDate, priority, completed },  
+         { title, description,completed, dueDate, priority  },  
             { new: true } // To return the updated document
         )   
         if(!updatedTask){
