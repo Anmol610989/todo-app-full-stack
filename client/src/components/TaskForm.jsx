@@ -2,20 +2,37 @@ import React from 'react'
 import {useState, useEffect, useContext} from "react"
 import {TasksContext} from "../context/TasksContext"
 import FetchData from "./FetchData"
+import Toaster from './Toaster'
 
 
 const TaskForm = () => {
 
   const {title, setTitle, description, setDescription, priority, setPriority,  dueDate, setDueDate,data, setData, setRefresh, refresh} = useContext(TasksContext)
 
- 
-    const handleFormSubmit =  (e) => {
-      e.preventDefault();
-      // console.log("Form submitted with input:", title, description, priority, dueDate );
-      // Here you can add logic to handle the form submission, like sending data to a server or updating state
-      
-      
-    addTask();
+  const [toast, setToast] = useState(null);
+  const [type, setType] = useState('');
+
+  // Toast notification for successful task addition
+
+  const createToast = (message, type) => {
+    setToast(message);
+    setType(type);
+    setTimeout(() => {
+      setToast("");
+    }, 3000);
+  };
+
+
+// Form submission handler
+  const handleFormSubmit =  (e) => {
+    e.preventDefault();
+
+    if(!title) {
+      createToast("Please enter a title", '');
+      return;
+    }
+     
+      addTask();
     };
     
     
@@ -46,6 +63,7 @@ const TaskForm = () => {
         console.error("Error fetching tasks:", error);
       }
       setRefresh(prev => !prev); // Toggle refresh to trigger useEffect
+      createToast("Task added successfully", 'success');
     };
 
 
@@ -71,6 +89,7 @@ const TaskForm = () => {
         console.error("Error updating task:", error);
       }
       setRefresh(prev => !prev); // Toggle refresh to trigger useEffect
+
   };
 
   // Delete request to delete a task
@@ -90,6 +109,7 @@ const TaskForm = () => {
 
   return (
     <>
+      
       <div className="w-full  bg-[#CBDCEB] flex justify-center items-center flex-col gap-5">
         <form
           action=""
@@ -126,6 +146,7 @@ const TaskForm = () => {
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
+          <label htmlFor="dueDate">Due Date:</label>
           <input
             type="date"
             name="dueDate"
@@ -142,7 +163,8 @@ const TaskForm = () => {
         </form>
       </div>
 
-      <FetchData updateTask={updateTask} deleteTask={deleteTask}  />
+      <FetchData updateTask={updateTask} deleteTask={deleteTask} />
+      <Toaster toast={toast} type={type} />
     </>
   );
 }
